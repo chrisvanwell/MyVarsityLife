@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <!-- Cordova Style Sheet -->
+        <!--<link rel="stylesheet" type="text/css" href="css/index.css" />-->
+        
+        <!-- Cordova Scripts -->
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        
+        <!-- Parse Scripts -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.2.15.min.js"></script>
+        
+        <!-- My Scripts -->
+        <!-- My Parse Script, trying this out again -->
+        <script>
+                
+            function btnSubmitClicked () {
+                //Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1 ", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p ");
+                var ClassifiedsItems = Parse.Object.extend("ClassifiedsItems");
+                var classifiedItem = new ClassifiedsItems();
+                
+                //var title = document.getElementById("iptItemTitle").value;
+                //alert("Title: "+title);
+                //var description = document.getElementById("iptItemDescription").value;
+                //alert("Description: "+description);
+                //var askingPrice = document.getElementById('iptAskingPrice').value;
+                //alert("Asking price: "+askingPrice);
+                //var priceNeg = document.getElementById('iptPriceNeg').value;
+                //alert("Price Neg: "+priceNeg);
+                
+                //classifiedItem.set ("itemTitle","Test Title");
+                //classifiedItem.set ("itemDescription","Test Description");
+                //classifiedItem.set ('itemAskingPrice',askingPrice);
+                //classifiedItem.set ('itemPriceNeg',priceNeg);
+                
+                classifiedItem.save({
+                    itemTitle: document.getElementById("iptItemTitle").value,
+                    itemDescrtiption: document.getElementById("iptItemDescription").value,
+                    itemAskingPrice: document.getElementById('iptAskingPrice').value,
+                    itemPriceNeg: document.getElementById('iptPriceNeg').value
+                }, {
+                  success: function(classifiedItem) {
+                      alert ("Saved successfully");
+                      $(".success").show();
+                  },
+                  error: function(classifiedItem, error) {
+                      alert ("Not Saved" + error.code+"  "+error.description);
+                      $(".error").show();
+                  }
+                });
+            }
+        </script>
+        
+        <title>MVL Data Submit Test</title>
+    </head>
+    <body>
+        <div class="app">
+
+                <label id="lblItemTitle">Item Title</label>
+                <input id="iptItemTitle" type="text" placeholder="What are you selling?" />
+                <br />
+                <label id="lblItemDescription">Item Description</label>
+                <textarea id="iptItemDescription" rows="4" placeholder="Describe the item for sale."></textarea>
+                <br />
+                <label id="lblAskingPrice">Asking Price</label>
+                <input id="iptAskingPrice" type="number" placeholder="How much would you like for your item?" />
+                <br />
+                <label id="lblPriceNeg">Price Negotiable</label>
+                <select id="iptPriceNeg" name="priceNeg">
+                    <option value="1">Yes</option>
+                    <option value="0" selected>No</option>
+                </select>
+                <br />
+            <button onclick="btnSubmitClicked()">Save</button>
+        </div>
+        <script type="text/javascript">
+            app.initialize();
+            Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
+        </script>
+    </body>
+</html>

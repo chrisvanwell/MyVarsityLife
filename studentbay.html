@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+        
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova_plugins.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.mobile-1.3.2.min.js"></script>
+        <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+        <!-- cordova facebook plugin -->
+        <script src="cdv-plugin-fb-connect.js"></script>
+        <!-- facebook js sdk -->
+        <script src="facebook-js-sdk.js"></script>
+        <script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
+        
+        <link rel="stylesheet" href="css/jquery.mobile.structure-1.3.2.min.css" />
+        <link rel="stylesheet" href="css/mvl.min.css" />
+        <link rel="stylesheet" href="css/styles.css" />
+        <link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
+
+
+        <!-- My Scripts -->
+        <!-- My Parse Script-->
+        <script>
+        		//alert("page loaded");
+        		Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
+                    var ThriftShopItem = Parse.Object.extend("ClassifiedsItems");
+                    var query = new Parse.Query(ThriftShopItem);
+                    query.descending("createdAt");
+                    query.find({
+                      success: function(results) {
+                       // alert("Successfully retrieved " + results.length + " items.");
+                        // Do something with the returned Parse.Object values
+                        returnItems(results);
+                      },
+                      error: function(error) {
+                        alert("Error: " + error.code + " " + error.message);
+                      }
+                    });
+                
+            
+            
+            function loadItem (itemID) {
+              //  alert ("Item with this ID will be loaded: "+itemID);
+                window.localStorage.setItem("itemID", itemID);
+                window.location = "viewItem.html";
+            }
+            
+            function returnItems (results) {
+                var itemsListHTML = '<ul data-role="listview" data-filter="true" data-shadow="false">';
+                for (var i = 0; i < results.length; i++) {
+                    var object = results[i];
+                   // alert("The object is: " + object.get('date'));
+                    var itemIDthis = object.id;
+                    
+                    itemsListHTML += "<li><a href='#' onclick=\"loadItem(\'"+itemIDthis+"\')\" id=\"itemID-"+object.id +"\">";
+                    itemsListHTML += " <h2>"+ object.get("itemTitle") +"</h2>";
+                    itemsListHTML += "<p>"+ object.get("itemDescription") + "</p>";
+                    itemsListHTML += "<p class='ui-li-aside'><strong>R "+ object.get("itemAskingPrice") + "</strong></p>";
+                    itemsListHTML += "</a></li>";
+                    
+                                }
+                itemsListHTML += "</ul>";
+                $("#divListItems").empty();
+                $("#divListItems").append(itemsListHTML);
+                $('#stbay').trigger('pagecreate');
+            }
+            
+            function btnGoHomeClicked() {
+                window.location = "index_mvl.html#menu";
+            }
+            function addItem() {
+                window.location = "addItem.html";
+            }
+
+        </script>
+        
+        <title>MVL Data Submit Test</title>
+    </head>
+    <body>
+    <div data-role="page" id="stbay">
+        <div data-role="header" data-theme="b" data-position="fixed">
+            <h1>StudentBay</h1>
+            <a href="#" onClick="btnGoHomeClicked()" data-icon="back" data-iconpos="notext" data-shadow="false" data-iconshadow="false"></a>
+        </div>
+        <div data-role="content" data-theme="a">
+            <div id="divListItems">
+                Loading...
+            </div>
+            
+        </div>
+        <a href="#" onClick="addItem()">
+        <div data-role="footer" data-theme="b" data-position="fixed" class="ui-bar">
+            <h3>Click here to sell a item</h3>
+        </div>
+        </a>
+    </div>
+    </body>
+</html>

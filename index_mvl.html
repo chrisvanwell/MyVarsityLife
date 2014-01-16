@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Overview</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+            <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+            <script type="text/javascript" charset="utf-8" src="cordova_plugins.js"></script>
+            <script src="js/jquery.min.js"></script>
+            <script src="js/jquery.mobile-1.3.2.min.js"></script>
+            <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+            <!-- cordova facebook plugin -->
+            <script src="cdv-plugin-fb-connect.js"></script>
+            <!-- facebook js sdk -->
+            <script src="facebook-js-sdk.js"></script>
+            <script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
+            
+            <link rel="stylesheet" href="css/jquery.mobile.structure-1.3.2.min.css" />
+            <link rel="stylesheet" href="css/mvl.min.css" />
+            <link rel="stylesheet" href="css/styles.css" />
+            <link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
+
+           
+            <script>
+                var a=0;
+                
+                $(document).on('swipeleft swiperight', function (event) {
+                               if(event.type == 'swiperight') {
+                               alert("Yes");
+                                  // datingQ();
+                               alert("item1: "+window["item"+a]);
+                               
+                               $('#employeeList').empty();
+                               $('#employeeList').append(window["item"+a]);
+                               
+                               a++;
+                               
+                                                             }
+                               if(event.type == 'swipeleft') {
+                               alert("No");
+                               
+                               $('#employeeList').empty();
+                               $('#employeeList').append(window["item"+a]);
+                               
+                               a++;
+
+                               }
+                               });
+
+
+
+
+                window.frames[0].alert = function() {};
+                         </script>
+            
+    </head>
+    <body >
+        
+        
+
+<!-- app login page ---- app login page ---- app login page --->
+        <div data-role="page" id="page" data-theme="b" data-url="page">
+         
+            <div class="head"></div>
+       
+                <div id="data">loading ...</div>
+      
+        
+                    <a href="#" data-role="button" onClick="login()" data-icon="gear" data-corners="false" data-theme="a">Sign in with Facebook</a>
+               
+                
+<!-- login script with json save to parse ---- login script with json save to parse ---- login script with json save to parse --->
+                <script>
+                    <!-- These are the notifications that are displayed to the user through pop-ups if the above JS files does not exist in the same directory-->
+                    if ((typeof cordova == 'undefined') && (typeof Cordova == 'undefined')) alert('Cordova variable does not exist. Check that you have included cordova.js correctly');
+                    if (typeof CDV == 'undefined') alert('CDV variable does not exist. Check that you have included cdv-plugin-fb-connect.js correctly');
+                    if (typeof FB == 'undefined') alert('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
+                    
+                    FB.Event.subscribe('auth.login', function(response) {
+                                     //  console.log('auth.login event');
+                        
+                                       getLoginStatus();
+                                       });
+                                       
+                                       FB.Event.subscribe('auth.logout', function(response) {
+                                                       //   console.log('auth.logout event');
+                                                          });
+                                                          
+                                                          FB.Event.subscribe('auth.sessionChange', function(response) {
+                                                                           //  console.log('auth.sessionChange event');
+                                                                             });
+                                                                             
+                                                                             FB.Event.subscribe('auth.statusChange', function(response) {
+                                                                                            //    console.log('auth.statusChange event');
+                                                                                                });
+                                                                                                
+                                                                                                /*function getSession() {
+                                                                                                 alert("session: " + JSON.stringify(FB.getSession()));
+                                                                                                 }
+                                                                                                 */
+                function getLoginStatus() {
+                    FB.getLoginStatus(function(response) {
+                                      if (response.status == 'connected') {
+                                      console.log('logged in');
+                                      Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
+                                      
+                                      me();
+                                      
+                                      } else {
+                                   //   console.log('not logged in');
+                                 
+                                      }
+                                      });
+                }
+                
+                
+                function me() {
+                    FB.api('/me/profile', { fields: 'id, name, pic' },  function(response) {
+                           if (response.error) {
+                           alert(JSON.stringify(response.error));
+                           } else {
+                           //var data = document.getElementById('data');
+                           var fdata=response.data;
+                        //   console.log("fdata: "+fdata);
+                        //    var d = document.createElement('div');
+                         //   d.innerHTML = "<img src='"+fdata[0].pic+"'/>"+fdata[0].name;
+                         //   data.appendChild(d);
+                           window.userID = fdata[0].id;
+                           window.userNAME = fdata[0].name;
+                           window.userPIC = fdata[0].pic;
+                           console.log("FB data: userId: "+fdata[0].id+" - name: "+fdata[0].name+" - pic: "+fdata[0].pic);
+                           datingQ();
+                           dataExistsCheck();
+                       //    userDataParse (fdata[0].id, fdata[0].name, fdata[0].pic);
+                        }
+                    });
+                }
+                
+                
+                
+
+
+                
+                function dataExistsCheck(){
+                    console.log("userID: "+userID);
+                    var FacebookUser = Parse.Object.extend("FacebookUser");
+                    var query = new Parse.Query(FacebookUser);
+                    query.equalTo("userId", userID);
+                    query.find({
+                               success: function(results) {
+                               console.log("Successfully retrieved " + results.length + ".");
+                               window.location = '#menu';
+                               var proPic  = '<img src="'+userPIC+'"/>';
+                               $('#profilePic').empty();
+                               $('#profilePic').append(proPic);
+
+                       
+                               if (results.length == 0){
+                                userDataParse (userID, userNAME, userPIC);
+                               }
+                               var object = results[0];
+                          //     console.log(object.id + ' - ' + object.get('userName'));
+                               },
+                               error: function(error) {
+                               alert("Error: " + error.code + " " + error.message);
+                               }
+                               });
+                               
+                }
+
+                
+                
+                function userDataParse (id,name,pic){
+                    
+                  //  console.log(" Parse data: userId: "+id+" - name: "+name+" - pic: "+pic);
+                    
+                    
+                    
+                     var FacebookUser = Parse.Object.extend("FacebookUser");
+                     var userObject = new FacebookUser();
+                     userObject.set("userId", id);
+                     userObject.set("userName", name);
+                     userObject.set("userPic", pic);
+                     
+                                    userObject.save(null, {
+                                                   success: function(userObject) {
+                                                   // Execute any logic that should take place after the object is saved.
+                                             //      console.log('New object created with objectId: ' + userObject.id);
+                                                   },
+                                                   error: function(userObject, error) {
+                                                   // Execute any logic that should take place if the save fails.
+                                                   // error is a Parse.Error with an error code and description.
+                                                   alert('Failed to create new object, with error code: ' + error.description);
+                                                   }
+                     });
+                     
+                     
+
+
+
+                    }
+                
+                function logout() {
+                    FB.logout(function(response) {
+                              alert('logged out');
+                              });
+                }
+                
+                function login() {
+                    FB.login(
+                             function(response) {
+                             if (response.session) {
+                            // alert('logged in');
+                             } else {
+                           //  alert('not logged in');
+                             }
+                             },
+                             { scope: "email" }
+                             );
+                }
+                
+                
+                
+                document.addEventListener('deviceready', function() {
+                                          try {
+                                         // alert('Device is ready! Make sure you set your app_id below this alert.');
+                                          FB.init({ appId: "637471482977634", nativeInterface: CDV.FB, useCachedDialogs: false });
+                                          document.getElementById('data').innerHTML = "";
+                                          } catch (e) {
+                                          alert("E "+e);
+                                          }
+                                          }, false);
+                    </script>
+                
+            </div><!-- /content -->
+        </div>
+        
+ <!-- menu page ---- menu page ---- menu page --->
+<div data-role="page" id="menu" data-theme="b" data-url="menu"><!--page-->
+            
+                <div class="bk">
+                    <div style="height: 200px;"></div>
+                    <a href="#timetable"><div class="icon-tt"></div></a>
+                    <a href="#dating"><div class="icon-heart"></div> </a>
+                    <a href="#" onClick="window.location='studentbay.html'"><div class="icon-shop"></div></a>
+                    <a href="#settings"><div class="icon-gear"></div></a>
+
+                </div>
+</div> <!--page-->
+
+<!-- dating page ---- dating page ---- dating page --->
+<div data-role="page"  id="dating" data-theme="b">
+    <div data-role="header" data-theme="b">
+        <h1>MyDatingLife</h1>
+        <a href="#menu" data-icon="back" data-iconpos="notext" data-shadow="false" data-iconshadow="false"></a>
+    </div>
+
+
+    <div data-role="content"  data-theme="a">
+        </br>
+
+       <center> <div id="employeeList" class="polaroid"></div></center>
+        <center><p class="pola" style="color: #888;">Swipe to like or not</p></center>
+        <p class="pola" style="float:right; color: #66FF33;">I Like</p><p class="pola" style="float:left; color: #FF0000;">Nooo</p>
+        
+        <div id="busy">Loading...</div>
+    </div>
+    
+    <script src="js/jquery.js"></script>
+    <script src="js/iscroll.js"></script>
+    <script src="js/dating.js"></script>
+</div>
+
+
+<!-- timetable page ---- timetable page ---- timetable page --->
+<div data-role="page" id="timetable" data-theme="b" data-url="timetable">
+            <div data-role="header" data-theme="b">
+                <h1>Time Table</h1>
+                 <a href="#menu" data-icon="back" data-iconpos="notext" data-shadow="false" data-iconshadow="false"></a>
+               <!-- <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>-->
+                 <a href="#right-panel" data-icon="star" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>
+            </div><!-- /header -->
+            
+            <div data-role="content"  data-theme="a">
+                <div data-role="collapsible-set" data-theme="b" data-content-theme="c">
+                    <div data-role="collapsible">
+                        <h3>Monday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Tuesday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Wednesday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+
+                    </div>
+                    <div data-role="collapsible" data-collapsed="false">
+                        <h3>Thursday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Friday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Saturday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+
+                    </div>
+                    <div data-role="collapsible">
+                        <h3>Sunday</h3>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>9:24</strong>AM</p>
+                            <p><strong>Math</strong></p>
+                        </li>
+                        <li data-theme="c">
+                            <p class="ui-li-aside"><strong>1:24</strong>PM</p>
+                            <p><strong>Engineering</strong></p>
+                        </li>
+
+                    </div>
+
+                </div>
+            </div>
+     
+     
+            
+       
+            <div data-role="panel" id="left-panel" data-theme="c">
+            
+                
+                <ul data-role="listview" data-theme="b" data-icon="false" data-inset="true">
+                 
+                    
+                    <li data-icon="grid" ><a href="#timetable">Timetable</a></li>
+                    <li data-icon="bars"><a href="#courses" onClick="">Courses</a></li>
+                    <li data-icon="star" ><a href="#account" onClick="fred()">Account</a></li>
+                    <li data-icon="star" ><a href="#events">Events</a></li>
+
+                </ul>
+                    <div data-role="collapsible-set" data-theme="a" data-content-theme="a">
+                        <div data-role="collapsible">
+                            <h3>Notifications</h3>
+                            <li>
+                                <div data-role="fieldcontain"><label for="flip-3">Classes cancelled:</label>
+                                    <select name="flip-3" id="flip-3" data-role="slider" data-theme="a" data-mini="true">
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select> </div>
+                            </li>
+                            <li>
+                                <div data-role="fieldcontain"><label for="flip-3">Events:</label>
+                                    <select name="flip-3" id="flip-3" data-role="slider" data-theme="a" data-mini="true">
+                                        <option value="no">No</option>
+                                        <option value="yes">Yes</option>
+                                    </select> </div>
+                            </li>
+
+                        </div>
+                    </div>
+                
+                
+
+        </div><!-- /panel -->
+            <div data-role="panel" id="right-panel" data-display="overlay" data-position="right" data-theme="c">
+            <ul data-role="listview" data-theme="d" data-icon="false">
+                <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+                <li data-role="list-divider">Share this page</li>
+                <li><a href="#">Twitter</a></li>
+                <li><a href="#">Facebook</a></li>
+                <li><a href="#">Google +</a></li>
+                <li><a href="#">Mail</a></li>
+            </ul>
+        </div><!-- /panel -->
+        </div>
+
+<!-- settings page ---- settings page ---- settings page --->
+<div data-role="page" id="settings" data-theme="b" data-url="settings">
+    <div data-role="header" data-theme="b">
+        <h1>Time Table</h1>
+        <a href="#menu" data-icon="back" data-iconpos="notext" data-shadow="false" data-iconshadow="false"></a>
+        <!-- <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>-->
+        <a href="#right-panel" data-icon="star" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>
+    </div><!-- /header -->
+    
+    <div data-role="content" id="Facebook_Me_mc_DatingContainer" name="mc_DatingContainer"
+        class=" Facebook_Me_mc_DatingContainer" dsid="mc_DatingContainer" data-theme="">
+        <link href="Facebook_Me.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="Facebook_Me.js">
+            </script>
+        <!-- txt_FirstName -->
+        <div data-role="fieldcontain" class="Facebook_Me_txt_FirstName ">
+            <input type="text" name="txt_FirstName" dsid="txt_FirstName" id="Facebook_Me_txt_FirstName"
+            placeholder="First Name" tabindex="1" data-theme="d" class=' Facebook_Me_txt_FirstName '
+            />
+        </div>
+        <!-- txt_LastName -->
+        <div data-role="fieldcontain" class="Facebook_Me_txt_LastName ">
+            <input type="text" name="txt_LastName" dsid="txt_LastName" id="Facebook_Me_txt_LastName"
+            placeholder="Last Name" tabindex="10" data-theme="d" class=' Facebook_Me_txt_LastName '
+            />
+        </div>
+        <!-- txt_EmailAddress -->
+        <div data-role="fieldcontain" class="Facebook_Me_txt_EmailAddress ">
+            <input type="email" name="txt_EmailAddress" dsid="txt_EmailAddress" id="Facebook_Me_txt_EmailAddress"
+            placeholder="Email address" tabindex="2" data-theme="d" class=' Facebook_Me_txt_EmailAddress '
+            />
+        </div>
+        <!-- mobilelabel_19 -->
+        <div name="mobilelabel_19" id="Facebook_Me_mobilelabel_19" dsid="mobilelabel_19"
+            data-role="appery_label" class=' Facebook_Me_mobilelabel_19 '>
+            Signup for dating?
+        </div>
+        <!-- mbt_DatingConfirm -->
+        <div data-role="fieldcontain" class="Facebook_Me_mbt_DatingConfirm ">
+            <select data-role="slider" name="mbt_DatingConfirm" id="Facebook_Me_mbt_DatingConfirm"
+                dsid="mbt_DatingConfirm" data-theme="d" data-track-theme="d">
+                <option value="off">
+                    No
+                </option>
+                <option value="on">
+                    Yes
+                </option>
+            </select>
+        </div>
+        <!-- mcb_Dating -->
+        <div data-role="collapsible" id="Facebook_Me_mcb_Dating" name="mcb_Dating" dsid="mcb_Dating"
+            data-collapsed="false" data-theme="d" data-content-theme="d" data-iconpos='left'
+            class=' Facebook_Me_mcb_Dating ui-corner-all'>
+            <h3 id="Facebook_Me_clpsDatingDetails" name="clpsDatingDetails" dsid="clpsDatingDetails"
+                data-collapsed="true">
+                Dating Details
+            </h3>
+            <!-- lbl_Gender -->
+            <div name="lbl_Gender" id="Facebook_Me_lbl_Gender" dsid="lbl_Gender" data-role="appery_label"
+                class=' Facebook_Me_lbl_Gender '>
+                Gender
+            </div>
+            <!-- selGender -->
+            <div data-role="fieldcontain" class="Facebook_Me_selGender ">
+                <select name="selGender" id="Facebook_Me_selGender" dsid="selGender" data-theme="d"
+                    data-inline="false" data-mini="false" data-icon="arrow-d" data-iconpos="right" data-native-menu="true"
+                    tabindex="6" appery-class="Facebook_Me_selGender">
+                    <option id="Facebook_Me_selGender-0" value="male" reRender="selGender" dsid="selGender-0"
+                        selected="selected">
+                        Male
+                    </option>
+                    <option id="Facebook_Me_selGender-1" value="female" reRender="selGender" dsid="selGender-1">
+                        Female
+                    </option>
+                </select>
+            </div>
+            <!-- lbl_Bio -->
+            <div name="lbl_Bio" id="Facebook_Me_lbl_Bio" dsid="lbl_Bio" data-role="appery_label"
+                class=' Facebook_Me_lbl_Bio '>
+                Bio
+            </div>
+            <!-- txt_Bio -->
+            <div data-role="fieldcontain" class="Facebook_Me_txt_Bio ">
+                <textarea name="txt_Bio" id="Facebook_Me_txt_Bio" data-mini="false" tabindex="3"
+                    dsid="txt_Bio" data-theme="d" class=' Facebook_Me_txt_Bio '>
+                </textarea>
+            </div>
+            <!-- lbl_ProfilePicture -->
+            <div name="lbl_ProfilePicture" id="Facebook_Me_lbl_ProfilePicture" dsid="lbl_ProfilePicture"
+                data-role="appery_label" class=' Facebook_Me_lbl_ProfilePicture '>
+                Profile Picture
+            </div>
+            <!-- img_ProfilePicture -->
+            <div id="profilePic">
+            </div>
+        </div>
+    </div>
+
+    
+    
+    
+    
+    <div data-role="panel" id="left-panel" data-theme="c">
+        
+        
+        <ul data-role="listview" data-theme="b" data-icon="false" data-inset="true">
+            
+            
+            <li data-icon="grid" ><a href="#timetable">Timetable</a></li>
+            <li data-icon="bars"><a href="#courses" onClick="">Courses</a></li>
+            <li data-icon="star" ><a href="#account" onClick="fred()">Account</a></li>
+            <li data-icon="star" ><a href="#events">Events</a></li>
+            
+        </ul>
+        <div data-role="collapsible-set" data-theme="a" data-content-theme="a">
+            <div data-role="collapsible">
+                <h3>Notifications</h3>
+                <li>
+                    <div data-role="fieldcontain"><label for="flip-3">Classes cancelled:</label>
+                        <select name="flip-3" id="flip-3" data-role="slider" data-theme="a" data-mini="true">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select> </div>
+                </li>
+                <li>
+                    <div data-role="fieldcontain"><label for="flip-3">Events:</label>
+                        <select name="flip-3" id="flip-3" data-role="slider" data-theme="a" data-mini="true">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                        </select> </div>
+                </li>
+                
+            </div>
+        </div>
+        
+        
+        
+    </div><!-- /panel -->
+    <div data-role="panel" id="right-panel" data-display="overlay" data-position="right" data-theme="c">
+        <ul data-role="listview" data-theme="d" data-icon="false">
+            <li data-icon="delete"><a href="#" data-rel="close">Close</a></li>
+            <li data-role="list-divider">Share this page</li>
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Facebook</a></li>
+            <li><a href="#">Google +</a></li>
+            <li><a href="#">Mail</a></li>
+        </ul>
+    </div><!-- /panel -->
+</div>
+
+        <style scoped>
+            
+
+
+        .placeholder {
+                background: url(img/emergency.png) no-repeat center center;
+                background-color:#ced0ca;
+                background-size: 100% auto;
+
+            }
+        .icon-tt {
+            background: url(img/calendar.png) no-repeat center center;
+             width: 50%;
+             height: 140px;
+            float:left;
+            
+        }
+        .icon-heart {
+            background: url(img/heart.png) no-repeat center center;
+             width: 50%;
+             height: 140px;
+             float:left;
+        }
+        .icon-shop {
+            background: url(img/shop.png) no-repeat center center;
+             width: 50%;
+             height: 140px;
+             float:left;
+        }
+        .icon-gear {
+            background: url(img/gear.png) no-repeat center center;
+            width: 50%;
+            height: 140px;
+             float:left;
+            
+        }
+        
+        .bk{
+            position:relative;
+            top:-40px;
+            left:0px;
+            height: 605px;
+            background: url(img/MVL-background.png) no-repeat center center;
+            -webkit-background-size: 100% auto;
+            background-size: 100% auto;
+
+        }
+
+
+            .head {
+                position:relative;
+                top:-80px;
+                left:0px;
+                //border-radius: 0px;
+                height: 346px;
+                background: url(img/MVL.png) no-repeat center center;
+                background-color:transparent !important;
+                -webkit-background-size: 100% auto;
+                background-size: 100% auto;
+               // -webkit-border-radius:10px;
+            }
+        .timetable {
+            border-radius: 0px;
+            height: 400px;
+            background: url(img/timetable.png) no-repeat center center;
+            background-color:#ffffff;
+            -webkit-background-size: 100% auto;
+            background-size: 100% auto;
+            -webkit-border-radius:0px;
+        }
+        .tt {
+            border-radius: 1px;
+            height: 52px;
+            background: url(img/TT.png) no-repeat center center;
+            background-color:#ffffff;
+            -webkit-background-size: 100% auto;
+            background-size: 100% auto;
+            -webkit-border-radius:1px;
+        }
+
+        
+        .courses {
+            border-radius: 1px;
+            height: 62px;
+            background: url(img/COURSES.png) no-repeat center center;
+            background-color:#ffffff;
+            -webkit-background-size: 100% auto;
+            background-size: 100% auto;
+            -webkit-border-radius:1px;
+        }
+
+
+            .ui-page {
+                background: #fff;
+                
+            }
+            .ui-content{
+                
+                border-bottom:0px;
+                background: #fff;
+            }
+            
+            .inneriframe
+            {
+                position:absolute;
+                zoom: 0.75;
+                -webkit-transform: scale(0.75);
+                -webkit-transform-origin: 0 0;
+                top:-80px;
+                left:0px;
+                border:none;
+                width:315px;
+                height:420px;
+            }
+        
+
+            
+            
+            
+            </style>
+    </body>
+</html>

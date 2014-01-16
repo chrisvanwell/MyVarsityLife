@@ -1,0 +1,31 @@
+<form action="https://self-service.wits.ac.za/psp/csprod/UW_SELF_SERVICE/HRMS/c/UW_SS_MENU.UW_SS_BIL_STM.GBL?cmd=login&languageCd=ENG" method="post" id="login" name="login" autocomplete="off" onsubmit="signin(document.login);" target="">
+    <input type="hidden" name="timezoneOffset" value="0">
+        
+        <div style="text-align:center">
+            <h1 id="error_img" style="display:none"><a id="error_link" href="javascript:setFocus();" tabindex="1"><img src="/csprod/images/PT_LOGIN_ERROR.gif" alt="Error" border="0"></a></h1>
+            <h2 class="psloginerror" id="login_error" style="visibility:hidden"></h2>
+            <h2 class="psloginerror" id="discovery_error" style="visibility:hidden"></h2>
+        </div><div class="psloginerror" id="browsercheck_error" style="text-align:left"></div><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" valign="top">
+            <tbody><tr>
+                
+                
+            </tr>
+                <tr>
+                    <td width="45%" height="25" align="center" valign="middle" class="text_normal"><label for="userid"> User ID:</label></td>
+                    <td width="1%" height="25" align="left" valign="top">&nbsp;</td>
+                    <td width="54%" height="25" align="left" valign="top"><input id="userid" name="userid" type="text" class="pslogineditbox" value="680740" size="15" tabindex="2"></td>
+                </tr>
+                <tr>
+                    <td height="25" align="center" valign="middle" class="text_normal"><label for="pwd">Password:</label></td>
+                    <td height="10" align="left" valign="top">&nbsp;</td>
+                    <td height="25" align="left" valign="top"><input type="password" id="pwd" name="pwd" class="pslogineditbox" size="15" tabindex="3" value="755499"></td>
+                </tr>
+                <tr>
+                    <td height="25" align="center" valign="middle">&nbsp;</td>
+                    <td height="10">&nbsp;</td>
+                    <td height="25"><input name="Submit" type="submit" class="login-button" tabindex="4" value="Sign In" onclick="submitAction(document.login);"></td>
+                    <td height="25"><input name="Submit" type="button" class="login-button" tabindex="4" value="home" onclick="$.mobile.changePage('#page1');"></td>
+                </tr>
+                
+            </tbody></table>
+        </form>

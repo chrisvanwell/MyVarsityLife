@@ -21,10 +21,16 @@
 
             <script>
 
-                               
-                               $(document).on("pageshow", "#addNote", function(e, ui) {
+
                                               
-                                   
+                                              function picButton() {
+                                              console.log("pic button pressed");
+                                       
+                                              navigator.camera.getPicture(gotPic, failHandler,
+                                                                          {quality:50, destinationType:navigator.camera.DestinationType.DATA_URL,
+                                                                          sourceType:navigator.camera.PictureSourceType.PHOTOLIBRARY});
+                                              }
+
                                               
                                               function gotPic(data) {
                                               console.log('got here');
@@ -45,7 +51,7 @@
                                               $("#takePicBtn").text("Add Pic").button("refresh");
                                               }
                                               
-                                              });
+                                       
                 </script>
        </head>
     <body>
@@ -61,7 +67,7 @@
     		<div data-role="content">
 		        <h2>Add Note</h2>
 		        <textarea id="noteText"></textarea>
-		        <button id="takePicBtn">Add Pic</button>
+		        <a href="#" onClick="picButton();" data-role="button" >Add Pic</a>
 		        <button id="saveNoteBtn">Save</button>
     		</div>
             

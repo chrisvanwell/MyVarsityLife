@@ -20,38 +20,51 @@
             <link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
 
             <script>
-                
-                // Wait for device API libraries to load
-                //
-                document.addEventListener("deviceready", onDeviceReady, false);
-                
-                // device APIs are available
-                //
-                function onDeviceReady() {
-                    alert("ready");
-                  //  $( "#popupLoad" ).popup( "open" );
-                }
-            </script>
+
+                               
+                               $(document).on("pageshow", "#addNote", function(e, ui) {
+                                              
+                                   
+                                              
+                                              function gotPic(data) {
+                                              console.log('got here');
+                                              imagedata = data;
+                                              $("#takePicBtn").text("Picture Taken!").button("refresh");
+                                              }
+                                              
+                                              function failHandler(e) {
+                                              alert("ErrorFromC");
+                                              alert(e);
+                                              console.log(e.toString());
+                                              }
+                                              
+                                              function cleanUp() {
+                                              imagedata = "";
+                                              $("#saveNoteBtn").removeAttr("disabled").button("refresh");
+                                              $("#noteText").val("");
+                                              $("#takePicBtn").text("Add Pic").button("refresh");
+                                              }
+                                              
+                                              });
+                </script>
        </head>
-           <body>
-               <div class="head"></div>
-               
-               <div id="data">loading ...</div>
-               
-               <a href="#popupLoad" onClick=''data-rel="popup" data-position-to="window"  data-role="button" data-inline="true" data-icon="check" data-theme="a" data-transition="pop">Sign in</a>
-               
-               <div data-role="popup" id="popupLoad" data-overlay-theme="b" data-dismissible="false"  data-theme="a" class="ui-content">
-                   <form>
-                       <div class="load">
-                           
-                           
-                       </div>
-                   </form>
-                   
-                   <div data-role="popup" data-dismissible="false" id="popupLoad" data-overlay-theme="a" data-theme="d" data-corners="false">
-                       <img class="poplaoding" src="/img/loading.gif" style="max-height:512px;" alt="Loading....">
-                           </div>
-                   
-               </div>
-           </body>
-</html>
+    <body>
+        
+        
+    	<div data-role="page" id="addNote">
+            
+    		<div data-role="header">
+    			<a href="#home" data-icon="home" data-iconpos="notext">Home</a>
+    			<h1>Notebook</h1>
+    		</div>
+            
+    		<div data-role="content">
+		        <h2>Add Note</h2>
+		        <textarea id="noteText"></textarea>
+		        <button id="takePicBtn">Add Pic</button>
+		        <button id="saveNoteBtn">Save</button>
+    		</div>
+            
+    	</div>
+        
+    </body></html>

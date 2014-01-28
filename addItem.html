@@ -49,40 +49,53 @@
                 
             function btnSubmitClicked () {
                 alert("clicked");
+                var imagedata = "";
                 Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
-                var ClassifiedsItems = Parse.Object.extend("ClassifiedsItems");
-                var classifiedItem = new ClassifiedsItems();
+                
+                if(imagedata != "") {
+                    var parseFile = new Parse.File("mypic.jpg", {base64:imagedata});
+                    console.log(parseFile);
+                    parseFile.save().then(function() {
+                                          
+                                          var ClassifiedsItems = Parse.Object.extend("ClassifiedsItems");
+                                          var classifiedItem = new ClassifiedsItems();
               
-                 alert("1");
+                                          alert("1");
           
                 
-                var title = document.getElementById("iptItemTitle").value;
-                var description = document.getElementById("iptItemDescription").value;
-                var askingPrice = document.getElementById('iptAskingPrice').value;
-                var priceNeg = document.getElementById('iptPriceNeg').value;
-                alert("2");
-                
-                classifiedItem.set ("itemTitle",title);
-                classifiedItem.set ("itemDescription",description);
-                classifiedItem.set ("itemAskingPrice",askingPrice);
-                classifiedItem.set ("itemPriceNeg",priceNeg);
+                                          var title = document.getElementById("iptItemTitle").value;
+                                          var description = document.getElementById("iptItemDescription").value;
+                                          var askingPrice = document.getElementById('iptAskingPrice').value;
+                                          var priceNeg = document.getElementById('iptPriceNeg').value;
+                                          var uID = window.localStorage.getItem("uID");
+                                          alert("2");
+                                          
+                                          classifiedItem.set ("itemTitle",title);
+                                          classifiedItem.set ("itemDescription",description);
+                                          classifiedItem.set ("itemAskingPrice",askingPrice);
+                                          classifiedItem.set ("itemPriceNeg",priceNeg);
+                                          classifiedItem.set ("userId",uID);
+                                          classifiedItem.set ("itemPicture",parseFile);
+                                          
                 //classifiedItem.set ("user", currentUser);
                 //classifiedItem.setACL(itemACL);
-                 alert("3");
-                classifiedItem.save(null, {
-                  success: function(classifiedItem) {
-                      alert ("Saved successfully");
-                      document.getElementById("iptItemTitle").value = "";
-                      document.getElementById("iptItemDescription").value = "";
-                      document.getElementById('iptAskingPrice').value = "";
-                      document.getElementById('iptPriceNeg').value = 0;
+                                          alert("3");
+                                          classifiedItem.save(null, {
+                                                              success: function(classifiedItem) {
+                                                              alert ("Saved successfully");
+                                                              document.getElementById("iptItemTitle").value = "";
+                                                              document.getElementById("iptItemDescription").value = "";
+                                                              document.getElementById('iptAskingPrice').value = "";
+                                                              document.getElementById('iptPriceNeg').value = 0;
                       
-                  },
-                  error: function(classifiedItem, error) {
-                      alert ("Not Saved" + error.code+"  "+error.description);
-                      $(".error").show();
-                  }
-                });
+                                                              },
+                                                              error: function(classifiedItem, error) {
+                                                              alert ("Not Saved" + error.code+"  "+error.description);
+                                                              $(".error").show();
+                                                              }
+                                                              });
+                                          });
+                                    }
             }
             
             
@@ -95,6 +108,33 @@
             function btnListItemsClicked () {
                 window.location = "studentbay.html";
             }
+        
+        function picButton() {
+                            console.log("pic button pressed");
+                            e.preventDefault();
+                            navigator.camera.getPicture(gotPic, failHandler,
+                                                        {quality:50, destinationType:navigator.camera.DestinationType.DATA_URL,
+                                                        sourceType:navigator.camera.PictureSourceType.PHOTOLIBRARY});
+                            }
+                            
+                            function gotPic(data) {
+                                console.log('got here');
+                                imagedata = data;
+                                $("#takePicBtn").text("Picture Taken!").button("refresh");
+                            }
+        
+        function failHandler(e) {
+            alert("ErrorFromC");
+            alert(e);
+            console.log(e.toString());
+        }
+        
+        function cleanUp() {
+            imagedata = "";
+            $("#saveNoteBtn").removeAttr("disabled").button("refresh");
+            $("#noteText").val("");
+            $("#takePicBtn").text("Add Pic").button("refresh");
+        }
         </script>
         
         <title>MVL Data Submit Test</title>
@@ -121,6 +161,7 @@
                 <option value="1">Yes</option>
                 <option value="0">No</option>
             </select>
+            <a href="#" onClick="picButton();" data-role="button" >Add Pic</a>
             <center>
             <div data-role="controlgroup" data-type="horizontal" data-theme="b">
                 <a href="#" onClick="btnSubmitClicked()" data-role="button">Submit</a>

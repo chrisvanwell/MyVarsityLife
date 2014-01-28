@@ -21,9 +21,11 @@
 
            
             <script>
+            
                 var a=0;
                 
                 $(document).on('swipeleft swiperight', function (event) {
+                               
                                if(event.type == 'swiperight') {
                                alert("Yes");
                                   // datingQ();
@@ -49,8 +51,7 @@
 
 
 
-                window.frames[0].alert = function() {};
-                         </script>
+                </script>
             
     </head>
     <body >
@@ -64,7 +65,22 @@
        
                 <div id="data">loading ...</div>
       
-        
+      <a href="#" onClick=''data-rel="popup" data-position-to="window"  data-role="button" data-inline="true" data-icon="check" data-theme="a" data-transition="pop">Sign in</a>
+    
+          <div data-role="popup" id="popupLoad" data-overlay-theme="b" data-dismissible="false"  data-theme="a" class="ui-content">
+              <form>
+                  <div class="load">
+                    
+                      
+                              </div>
+              </form>
+              
+              <div data-role="popup" data-dismissible="false" id="popupLoad" data-overlay-theme="a" data-theme="d" data-corners="false">
+                  <img class="poplaoding" src="/img/loading.gif" style="max-height:512px;" alt="Loading....">
+                      </div>
+
+          </div>
+
                     <a href="#" data-role="button" onClick="login()" data-icon="gear" data-corners="false" data-theme="a">Sign in with Facebook</a>
                
                 
@@ -75,22 +91,24 @@
                     if (typeof CDV == 'undefined') alert('CDV variable does not exist. Check that you have included cdv-plugin-fb-connect.js correctly');
                     if (typeof FB == 'undefined') alert('FB variable does not exist. Check that you have included the Facebook JS SDK file.');
                     
+                    
+                    
                     FB.Event.subscribe('auth.login', function(response) {
-                                     //  console.log('auth.login event');
-                        
+                                       console.log('auth.login event');
+                                       
                                        getLoginStatus();
                                        });
                                        
                                        FB.Event.subscribe('auth.logout', function(response) {
-                                                       //   console.log('auth.logout event');
+                                                          console.log('auth.logout event');
                                                           });
                                                           
                                                           FB.Event.subscribe('auth.sessionChange', function(response) {
-                                                                           //  console.log('auth.sessionChange event');
+                                                                             console.log('auth.sessionChange event');
                                                                              });
                                                                              
                                                                              FB.Event.subscribe('auth.statusChange', function(response) {
-                                                                                            //    console.log('auth.statusChange event');
+                                                                                                console.log('auth.statusChange event');
                                                                                                 });
                                                                                                 
                                                                                                 /*function getSession() {
@@ -102,56 +120,78 @@
                                       if (response.status == 'connected') {
                                       console.log('logged in');
                                       Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
-                                      
+                                      window.location = '#menu';
                                       me();
                                       
+                                      
                                       } else {
-                                   //   console.log('not logged in');
+                                    
+                                      console.log('not logged in');
                                  
                                       }
                                       });
                 }
                 
+                function loadingIt (){
+                    
+                    
+                }
+                
                 
                 function me() {
-                    FB.api('/me/profile', { fields: 'id, name, pic' },  function(response) {
+                    FB.api('/me', { fields: 'id,name,email,gender,first_name,last_name,username,bio,picture.type(large)' },  function(response) {
                            if (response.error) {
                            alert(JSON.stringify(response.error));
                            } else {
                            //var data = document.getElementById('data');
-                           var fdata=response.data;
-                        //   console.log("fdata: "+fdata);
+                           var fdata=response;
+                           var pic=response.picture;
+                           
+                           console.log("fdata: "+fdata.bio);
                         //    var d = document.createElement('div');
                          //   d.innerHTML = "<img src='"+fdata[0].pic+"'/>"+fdata[0].name;
                          //   data.appendChild(d);
-                           window.userID = fdata[0].id;
-                           window.userNAME = fdata[0].name;
-                           window.userPIC = fdata[0].pic;
-                           console.log("FB data: userId: "+fdata[0].id+" - name: "+fdata[0].name+" - pic: "+fdata[0].pic);
+                            window.localStorage.setItem("gender", fdata.gender);
+                           window.bio = fdata.bio;
+                           window.firstName = fdata.first_name;
+                           window.lastName = fdata.last_name;
+                           window.userID = fdata.id;
+                           window.userNAME = fdata.name;
+                           window.userPIC = pic.data.url;
+                           window.userEmail = fdata.email;
+                           console.log("FB data: userId: "+fdata.id+" - name: "+fdata.name+" - pic: "+fdata.picture);
                            datingQ();
                            dataExistsCheck();
+                 
                        //    userDataParse (fdata[0].id, fdata[0].name, fdata[0].pic);
                         }
                     });
                 }
-                
-                
+  
                 
 
 
                 
                 function dataExistsCheck(){
-                    console.log("userID: "+userID);
+                    console.log("firstname: "+firstName);
                     var FacebookUser = Parse.Object.extend("FacebookUser");
                     var query = new Parse.Query(FacebookUser);
                     query.equalTo("userId", userID);
                     query.find({
                                success: function(results) {
                                console.log("Successfully retrieved " + results.length + ".");
-                               window.location = '#menu';
+                               
                                var proPic  = '<img src="'+userPIC+'"/>';
                                $('#profilePic').empty();
                                $('#profilePic').append(proPic);
+                               $('#Bio').empty();
+                               $('#Bio').text(bio);
+                               $('#FirstName').empty();
+                               $('#FirstName').val(firstName);
+                               $('#LastName').empty();
+                               $('#LastName').val(lastName);
+                               $('#EmailAddress').empty();
+                               $('#EmailAddress').val(userEmail);
 
                        
                                if (results.length == 0){
@@ -169,7 +209,7 @@
 
                 
                 
-                function userDataParse (id,name,pic){
+                function userDataParse (id,name,pic,email){
                     
                   //  console.log(" Parse data: userId: "+id+" - name: "+name+" - pic: "+pic);
                     
@@ -193,7 +233,26 @@
                                                    }
                      });
                      
+                     var User = Parse.Object.extend("User");
+                     var userMore = new User();
+                     userMore.set("userId", id);
+                     userMore.set("userName", name);
+                     userMore.set("userPic", email);
                      
+                     userMore.save(null, {
+                                     success: function(userMore) {
+                                     // Execute any logic that should take place after the object is saved.
+                                     //      console.log('New object created with objectId: ' + userObject.id);
+                                     },
+                                     error: function(userMore, error) {
+                                     // Execute any logic that should take place if the save fails.
+                                     // error is a Parse.Error with an error code and description.
+                                     alert('Failed to create new object, with error code: ' + error.description);
+                                     }
+                                     });
+
+
+
 
 
 
@@ -202,6 +261,7 @@
                 function logout() {
                     FB.logout(function(response) {
                               alert('logged out');
+                              window.location = '#page';
                               });
                 }
                 
@@ -209,12 +269,12 @@
                     FB.login(
                              function(response) {
                              if (response.session) {
-                            // alert('logged in');
+                             alert('logged in');
                              } else {
-                           //  alert('not logged in');
+                             //alert('not logged in');
                              }
                              },
-                             { scope: "email" }
+                             { scope: "email,user_about_me" }
                              );
                 }
                 
@@ -231,8 +291,11 @@
                                           }, false);
                     </script>
                 
+               
+                
             </div><!-- /content -->
-        </div>
+        
+                </div>
         
  <!-- menu page ---- menu page ---- menu page --->
 <div data-role="page" id="menu" data-theme="b" data-url="menu"><!--page-->
@@ -245,6 +308,7 @@
                     <a href="#settings"><div class="icon-gear"></div></a>
 
                 </div>
+                 <a href="#" data-role="button" onClick="logout()" data-icon="gear" data-corners="false" data-theme="a">logout of app</a>
 </div> <!--page-->
 
 <!-- dating page ---- dating page ---- dating page --->
@@ -422,93 +486,60 @@
 <!-- settings page ---- settings page ---- settings page --->
 <div data-role="page" id="settings" data-theme="b" data-url="settings">
     <div data-role="header" data-theme="b">
-        <h1>Time Table</h1>
+        <h1>Settings</h1>
         <a href="#menu" data-icon="back" data-iconpos="notext" data-shadow="false" data-iconshadow="false"></a>
         <!-- <a href="#left-panel" data-icon="bars" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>-->
         <a href="#right-panel" data-icon="star" data-iconpos="notext" data-shadow="false" data-iconshadow="false">Menu</a>
     </div><!-- /header -->
     
-    <div data-role="content" id="Facebook_Me_mc_DatingContainer" name="mc_DatingContainer"
-        class=" Facebook_Me_mc_DatingContainer" dsid="mc_DatingContainer" data-theme="">
-        <link href="Facebook_Me.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="Facebook_Me.js">
-            </script>
+    <div data-role="content" data-theme="b">
         <!-- txt_FirstName -->
         <div data-role="fieldcontain" class="Facebook_Me_txt_FirstName ">
-            <input type="text" name="txt_FirstName" dsid="txt_FirstName" id="Facebook_Me_txt_FirstName"
-            placeholder="First Name" tabindex="1" data-theme="d" class=' Facebook_Me_txt_FirstName '
-            />
+            <input type="text" name="FirstName" id="FirstName" ></input>
         </div>
         <!-- txt_LastName -->
         <div data-role="fieldcontain" class="Facebook_Me_txt_LastName ">
-            <input type="text" name="txt_LastName" dsid="txt_LastName" id="Facebook_Me_txt_LastName"
-            placeholder="Last Name" tabindex="10" data-theme="d" class=' Facebook_Me_txt_LastName '
-            />
+            <input type="text" name="LastName" id="LastName" ></input>
         </div>
         <!-- txt_EmailAddress -->
         <div data-role="fieldcontain" class="Facebook_Me_txt_EmailAddress ">
-            <input type="email" name="txt_EmailAddress" dsid="txt_EmailAddress" id="Facebook_Me_txt_EmailAddress"
-            placeholder="Email address" tabindex="2" data-theme="d" class=' Facebook_Me_txt_EmailAddress '
-            />
+            <input type="email" name="EmailAddress" id="EmailAddress"></input>
         </div>
-        <!-- mobilelabel_19 -->
-        <div name="mobilelabel_19" id="Facebook_Me_mobilelabel_19" dsid="mobilelabel_19"
-            data-role="appery_label" class=' Facebook_Me_mobilelabel_19 '>
-            Signup for dating?
-        </div>
-        <!-- mbt_DatingConfirm -->
-        <div data-role="fieldcontain" class="Facebook_Me_mbt_DatingConfirm ">
-            <select data-role="slider" name="mbt_DatingConfirm" id="Facebook_Me_mbt_DatingConfirm"
-                dsid="mbt_DatingConfirm" data-theme="d" data-track-theme="d">
-                <option value="off">
-                    No
-                </option>
-                <option value="on">
-                    Yes
-                </option>
-            </select>
-        </div>
-        <!-- mcb_Dating -->
-        <div data-role="collapsible" id="Facebook_Me_mcb_Dating" name="mcb_Dating" dsid="mcb_Dating"
-            data-collapsed="false" data-theme="d" data-content-theme="d" data-iconpos='left'
-            class=' Facebook_Me_mcb_Dating ui-corner-all'>
-            <h3 id="Facebook_Me_clpsDatingDetails" name="clpsDatingDetails" dsid="clpsDatingDetails"
-                data-collapsed="true">
+
+      
+      <!-- mcb_Dating -->
+        <div data-role="collapsible" data-collapsed="false" data-theme="a" data-iconpos='left'>
+            <h3 data-collapsed="true">
                 Dating Details
             </h3>
             <!-- lbl_Gender -->
-            <div name="lbl_Gender" id="Facebook_Me_lbl_Gender" dsid="lbl_Gender" data-role="appery_label"
-                class=' Facebook_Me_lbl_Gender '>
+            <div>
                 Gender
             </div>
             <!-- selGender -->
-            <div data-role="fieldcontain" class="Facebook_Me_selGender ">
-                <select name="selGender" id="Facebook_Me_selGender" dsid="selGender" data-theme="d"
-                    data-inline="false" data-mini="false" data-icon="arrow-d" data-iconpos="right" data-native-menu="true"
-                    tabindex="6" appery-class="Facebook_Me_selGender">
-                    <option id="Facebook_Me_selGender-0" value="male" reRender="selGender" dsid="selGender-0"
+            <div data-role="fieldcontain">
+                <select name="selGender" data-theme="a"
+                    data-inline="false" data-mini="false" data-icon="arrow-d" data-iconpos="right" data-native-menu="true">
+                    <option value="male" reRender="selGender"
                         selected="selected">
                         Male
                     </option>
-                    <option id="Facebook_Me_selGender-1" value="female" reRender="selGender" dsid="selGender-1">
+                    <option value="female" reRender="selGender">
                         Female
                     </option>
                 </select>
             </div>
             <!-- lbl_Bio -->
-            <div name="lbl_Bio" id="Facebook_Me_lbl_Bio" dsid="lbl_Bio" data-role="appery_label"
-                class=' Facebook_Me_lbl_Bio '>
+            <div>
                 Bio
             </div>
             <!-- txt_Bio -->
             <div data-role="fieldcontain" class="Facebook_Me_txt_Bio ">
-                <textarea name="txt_Bio" id="Facebook_Me_txt_Bio" data-mini="false" tabindex="3"
-                    dsid="txt_Bio" data-theme="d" class=' Facebook_Me_txt_Bio '>
+                <textarea name="txt_Bio" id="Bio" data-mini="false" data-theme="d">
                 </textarea>
             </div>
             <!-- lbl_ProfilePicture -->
-            <div name="lbl_ProfilePicture" id="Facebook_Me_lbl_ProfilePicture" dsid="lbl_ProfilePicture"
-                data-role="appery_label" class=' Facebook_Me_lbl_ProfilePicture '>
+            <div>
                 Profile Picture
             </div>
             <!-- img_ProfilePicture -->
@@ -570,6 +601,21 @@
 </div>
 
         <style scoped>
+            
+            .load {
+                position:relative;
+               // top:80px;
+                left:0px;
+                //border-radius: 0px;
+                height: 128px;
+                width: 128px;
+                background: url(img/loading.gif) no-repeat center center;
+                background-color:transparent !important;
+                -webkit-background-size: 80% auto;
+                background-size: 80% auto;
+                // -webkit-border-radius:10px;
+            }
+
             
 
 

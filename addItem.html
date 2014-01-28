@@ -48,31 +48,27 @@
             
                 
             function btnSubmitClicked () {
-                //alert("clicked");
+                alert("clicked");
                 Parse.initialize("iAqOMFdApOjI6b5qSQTpyhhs6shTlr5TmwTc8dT1", "1SEKIbsGKJQh2plooWDSL6Q5L9fmkgsliigAql0p");
                 var ClassifiedsItems = Parse.Object.extend("ClassifiedsItems");
                 var classifiedItem = new ClassifiedsItems();
-                var currentUser = "SqDDc5CYbY";
-                // alert("1");
-                var itemACL = new Parse.ACL(currentUser);
-                itemACL.setPublicReadAccess(true);
-                itemACL.setPublicWriteAccess(false);
-                //alert("2");
+              
+                 alert("1");
+          
                 
                 var title = document.getElementById("iptItemTitle").value;
                 var description = document.getElementById("iptItemDescription").value;
                 var askingPrice = document.getElementById('iptAskingPrice').value;
                 var priceNeg = document.getElementById('iptPriceNeg').value;
-                
-                console.log("title: "+title+" des: "+description+" ask: "+askingPrice+" neg: "+priceNeg+" user: "+currentUser+" ACL "+itemACL);
+                alert("2");
                 
                 classifiedItem.set ("itemTitle",title);
                 classifiedItem.set ("itemDescription",description);
                 classifiedItem.set ("itemAskingPrice",askingPrice);
                 classifiedItem.set ("itemPriceNeg",priceNeg);
-                classifiedItem.set ("user", currentUser);
-                classifiedItem.setACL(itemACL);
-                
+                //classifiedItem.set ("user", currentUser);
+                //classifiedItem.setACL(itemACL);
+                 alert("3");
                 classifiedItem.save(null, {
                   success: function(classifiedItem) {
                       alert ("Saved successfully");

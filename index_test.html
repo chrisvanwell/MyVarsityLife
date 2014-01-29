@@ -62,9 +62,44 @@
                                         $("#takePicBtn").text("Add Pic").button("refresh");
                                   }
 
+<<<<<<< HEAD
                             }
                 );
             </script>
+=======
+
+                                              
+                                              function picButton() {
+                                              console.log("pic button pressed");
+                                       
+                                              navigator.camera.getPicture(gotPic, failHandler,
+                                                                          {quality:50, destinationType:navigator.camera.DestinationType.DATA_URL,
+                                                                          sourceType:navigator.camera.PictureSourceType.PHOTOLIBRARY});
+                                              }
+
+                                              
+                                              function gotPic(data) {
+                                              console.log('got here');
+                                              imagedata = data;
+                                              $("#takePicBtn").text("Picture Taken!").button("refresh");
+                                              }
+                                              
+                                              function failHandler(e) {
+                                              alert("ErrorFromC");
+                                              alert(e);
+                                              console.log(e.toString());
+                                              }
+                                              
+                                              function cleanUp() {
+                                              imagedata = "";
+                                              $("#saveNoteBtn").removeAttr("disabled").button("refresh");
+                                              $("#noteText").val("");
+                                              $("#takePicBtn").text("Add Pic").button("refresh");
+                                              }
+                                              
+                                       
+                </script>
+>>>>>>> 3b24cc981b5b90f63b1f718c5c4a690abf91bbed
        </head>
     <body>
         
@@ -79,7 +114,7 @@
     		<div data-role="content">
 		        <h2>Add Note</h2>
 		        <textarea id="noteText"></textarea>
-		        <button id="takePicBtn">Add Pic</button>
+		        <a href="#" onClick="picButton();" data-role="button" >Add Pic</a>
 		        <button id="saveNoteBtn">Save</button>
     		</div>
             

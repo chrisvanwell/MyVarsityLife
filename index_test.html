@@ -3,50 +3,68 @@
     <head>
         <title>Overview</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+            
+            <!---Cordova Plugins--->
             <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
             <script type="text/javascript" charset="utf-8" src="cordova_plugins.js"></script>
             <script src="js/jquery.min.js"></script>
             <script src="js/jquery.mobile-1.3.2.min.js"></script>
+            
+            <!--- Parse plugin --->
             <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+            
             <!-- cordova facebook plugin -->
             <script src="cdv-plugin-fb-connect.js"></script>
+            
             <!-- facebook js sdk -->
             <script src="facebook-js-sdk.js"></script>
+            
+            <!--- Masonary plugin? --->
             <script src="http://masonry.desandro.com/masonry.pkgd.min.js"></script>
             
+            <!---Stylesheets--->
             <link rel="stylesheet" href="css/jquery.mobile.structure-1.3.2.min.css" />
             <link rel="stylesheet" href="css/mvl.min.css" />
             <link rel="stylesheet" href="css/styles.css" />
             <link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
+                
+            <script>
+                // Wait for device API libraries to load
+                //
+                document.addEventListener("deviceready", onDeviceReady, false);
+                // device APIs are available
+                //
+                function onDeviceReady() {
+                    alert("ready");
+                    //  $( "#popupLoad" ).popup( "open" );
+                }
+            </script>
 
             <script>
+               $(document).on("pageshow", "#addNote",
+                            function(e, ui) {
+                                  function gotPic(data) {
+                                        console.log("got here");
+                                        imagedata = data;
+                                        $("#takePicBtn").text("Picture Taken!").button("refresh");
+                                  }
+                                  
+                                  function failHandler(e) {
+                                        alert("ErrorFromC");
+                                        alert(e);
+                                        console.log(e.toString());
+                                  }
+                                  
+                                  function cleanUp() {
+                                        imagedata = "";
+                                        $("#saveNoteBtn").removeAttr("disabled").button("refresh");
+                                        $("#noteText").val("");
+                                        $("#takePicBtn").text("Add Pic").button("refresh");
+                                  }
 
-                               
-                               $(document).on("pageshow", "#addNote", function(e, ui) {
-                                              
-                                   
-                                              
-                                              function gotPic(data) {
-                                              console.log('got here');
-                                              imagedata = data;
-                                              $("#takePicBtn").text("Picture Taken!").button("refresh");
-                                              }
-                                              
-                                              function failHandler(e) {
-                                              alert("ErrorFromC");
-                                              alert(e);
-                                              console.log(e.toString());
-                                              }
-                                              
-                                              function cleanUp() {
-                                              imagedata = "";
-                                              $("#saveNoteBtn").removeAttr("disabled").button("refresh");
-                                              $("#noteText").val("");
-                                              $("#takePicBtn").text("Add Pic").button("refresh");
-                                              }
-                                              
-                                              });
-                </script>
+                            }
+                );
+            </script>
        </head>
     <body>
         

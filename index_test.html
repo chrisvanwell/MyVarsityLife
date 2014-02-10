@@ -29,30 +29,83 @@
             <link href="http://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet" type="text/css">
                 
             <script>
-                // Wait for device API libraries to load
-                //
-                document.addEventListener("deviceready", onDeviceReady, false);
-                // device APIs are available
-                //
-                function onDeviceReady() {
-                    alert("ready");
-                    //  $( "#popupLoad" ).popup( "open" );
-                }
+//                // Wait for device API libraries to load
+//                //
+//                document.addEventListener("deviceready", onDeviceReady, false);
+//                // device APIs are available
+//                //
+//                function onDeviceReady() {
+//                    alert("ready");
+//                    //  $( "#popupLoad" ).popup( "open" );
+//                }
             </script>
 
             <script>
-               $(document).on("pageshow", "#addNote",
-                            function(e, ui) {
+                
+                var pictureSource;   // picture source
+                var destinationType; // sets the format of returned value
+                
+                // Wait for device API libraries to load
+                //
+//                function onLoad () {
+//                        document.addEventListener("deviceready",onDeviceReady,false);
+//                }
+//
+//                // device APIs are available
+//                //
+//                
+//                
+//                function onDeviceReady() {
+//                    pictureSource=navigator.camera.PictureSourceType;
+//                    destinationType=navigator.camera.DestinationType;
+//                    alert("DeviceReady");
+//                }
+
+                function picButton() {
+                    //console.log("pic button pressed");
+                    alert("PicClicked");
+                    pictureSource=navigator.camera.PictureSourceType;
+                    destinationType=navigator.camera.DestinationType;
+                    alert("DeviceReady");
+
+                    navigator.camera.getPicture(gotPic, failHandler, {
+                                                quality:50,
+                                                destinationType: Camera.destinationType.DATA_URL
+                                                });
+                }
+            
+//               $(document).on("pageshow", "#addNote",
+//                            function(e, ui) {
                                   function gotPic(data) {
-                                        console.log("got here");
-                                        imagedata = data;
+                                      setTimeout(function() {
+                                                 alert("PicCaptured");
+                                                 }, 0);
+
+                                        //console.log("got here");
+                                        
+                                        var smallImage = document.getElementById('smallImage');
+                                        
+                                        // Unhide image elements
+                                        //
+                                        smallImage.style.display = 'block';
+                                        
+                                        // Show the captured photo
+                                        // The in-line CSS rules are used to resize the image
+                                        //
+                                        smallImage.src = "data:image/jpeg;base64," + imageData;
+                                        
+                                        //imagedata = data;
                                         $("#takePicBtn").text("Picture Taken!").button("refresh");
                                   }
                                   
                                   function failHandler(e) {
-                                        alert("ErrorFromC");
-                                        alert(e);
-                                        console.log(e.toString());
+                                      setTimeout(function() {
+                                                 alert("Error");
+                                                 }, 0);
+                                                 
+                                        //console.log("ErrorFromC");
+                                        //alert(e);
+                                        //console.log(e.toString());
                                   }
                                   
                                   function cleanUp() {
@@ -61,46 +114,10 @@
                                         $("#noteText").val("");
                                         $("#takePicBtn").text("Add Pic").button("refresh");
                                   }
-
-<<<<<<< HEAD
-                            }
-                );
+//                            }
+//                );
             </script>
-=======
-
-                                              
-                                              function picButton() {
-                                              console.log("pic button pressed");
-                                       
-                                              navigator.camera.getPicture(gotPic, failHandler,
-                                                                          {quality:50, destinationType:navigator.camera.DestinationType.DATA_URL,
-                                                                          sourceType:navigator.camera.PictureSourceType.PHOTOLIBRARY});
-                                              }
-
-                                              
-                                              function gotPic(data) {
-                                              console.log('got here');
-                                              imagedata = data;
-                                              $("#takePicBtn").text("Picture Taken!").button("refresh");
-                                              }
-                                              
-                                              function failHandler(e) {
-                                              alert("ErrorFromC");
-                                              alert(e);
-                                              console.log(e.toString());
-                                              }
-                                              
-                                              function cleanUp() {
-                                              imagedata = "";
-                                              $("#saveNoteBtn").removeAttr("disabled").button("refresh");
-                                              $("#noteText").val("");
-                                              $("#takePicBtn").text("Add Pic").button("refresh");
-                                              }
-                                              
-                                       
-                </script>
->>>>>>> 3b24cc981b5b90f63b1f718c5c4a690abf91bbed
-       </head>
+    </head>
     <body>
         
         
@@ -114,8 +131,9 @@
     		<div data-role="content">
 		        <h2>Add Note</h2>
 		        <textarea id="noteText"></textarea>
-		        <a href="#" onClick="picButton();" data-role="button" >Add Pic</a>
-		        <button id="saveNoteBtn">Save</button>
+		        <a href="#" onClick="picButton()" data-role="button" >Add Pic</a>
+		        <button id="saveNoteBtn">Save</button><br /><br />
+                <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
     		</div>
             
     	</div>
